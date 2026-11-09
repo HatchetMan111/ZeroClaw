@@ -1,0 +1,28 @@
+[Unit]
+Description=ZeroClaw - personal AI assistant (Gateway/Web-UI)
+Documentation=https://github.com/zeroclaw-labs/zeroclaw
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zeroclaw
+Group=zeroclaw
+WorkingDirectory=/var/lib/zeroclaw
+Environment=HOME=/var/lib/zeroclaw
+Environment=XDG_DATA_HOME=/var/lib/zeroclaw/.local/share
+Environment=RUST_LOG=info
+ExecStart=/usr/local/bin/zeroclaw --config-dir /var/lib/zeroclaw/.zeroclaw daemon
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+LimitNOFILE=16384
+
+# Der LXC ist die Isolationsgrenze. Der Agent braucht Shell-Zugriff auf
+# seinen Workspace, daher bewusst nur minimale Härtung.
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
